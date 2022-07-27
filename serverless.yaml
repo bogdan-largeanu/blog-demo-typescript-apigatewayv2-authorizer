@@ -1,0 +1,72 @@
+service: demo-typescript
+package:
+  individually: true
+  excludeDevDependencies: true
+
+plugins:
+  - serverless-esbuild # must be before offline
+  #  - serverless-prune-plugin
+  - serverless-offline
+  - serverless-iam-roles-per-function
+custom:
+  #Bundler
+  esbuild:
+    minify: false
+    packager: yarn
+    watch:
+      pattern: ['.src/index.ts', 'src/**/*.ts']
+      ignore: ['.serverless/**/*', '.build']
+    config: './esbuild.config.js'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage}
+  region: ${opt:region}
+
+ 
+  # Tags
+  stackTags: &stackTags
+    ServiceGroup: DemoTypescriptAuthv2
+    AppId: DemoTypescriptAuthv2
+  tags: *stackTags
+
+  #  Logs and metrics
+  logRetentionInDays: 365
+  logs:
+    httpApi: true #enable logging for apigateway v2
+  httpApi:
+    metrics: true #enables detailed metric
+    useProviderTags: true
+    #  Authorizer
+    authorizers:
+      CustomLambdaAuthorizer:
+        type: request #  Should be set to 'request' for custom Lambda authorizers
+        functionName: AuthorizerDemoTypescript
+        resultTtlInSeconds: 300 # max is 1h = 3600. 
+        enableSimpleResponses: true #         # Set if authorizer function will return authorization responses in simple format (default: false)
+        payloadVersion: '2.0' #
+        identitySource:
+          - $request.header.Authorization
+        # Optional. Applicable only when using externally defined authorizer functions
+        # to prevent creation of permission resource. Set this to true if you use this authorizer in another serverless service
+        managedExternally: false
+
+functions:
+  AuthorizerDemoTypescript:
+    memorySize: 256
+    timeout: 10
+    handler: src/authorizer.authorizerHandler
+  
+  PresignedUrls: 
+    handler: src/index.handler
+    memorySize: 256
+    timeout: 10
+
+    events:
+      - httpApi:
+          method: POST
+          path: /demo-typescript-authorizer
+          authorizer: # Optional
+                # Name of an authorizer defined in 'provider.httpApi.authorizers'
+                name: CustomLambdaAuthorizer

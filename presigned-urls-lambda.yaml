@@ -1,0 +1,21 @@
+handler: src/index.presignedUrls
+memorySize: 256
+timeout: 10
+
+events:
+  - httpApi:
+      method: POST
+      path: /presignedUrls
+      authorizer: # Optional
+            # Name of an authorizer defined in 'provider.httpApi.authorizers'
+            name: CustomLambdaAuthorizer
+tags:
+# See: https://trint-ltd.atlassian.net/wiki/spaces/EN/pages/3259695105/AWS+Resource+Tagging+and+Exploring+Costs
+
+iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+      - s3:PutObject
+    Resource:
+      - arn:aws:s3:::${self:custom.liveEngineMediaSegmentsBucket}/*
