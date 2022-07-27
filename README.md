@@ -1,0 +1,1 @@
+This is part of blog post. Check for info https://www.lbogdan.com/implementing-typescript-for-aws-authoriser-lambda-with-apigateway-v2-http-api/
