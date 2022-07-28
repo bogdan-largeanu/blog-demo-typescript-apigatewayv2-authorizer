@@ -9,8 +9,6 @@ events:
       authorizer: # Optional
             # Name of an authorizer defined in 'provider.httpApi.authorizers'
             name: CustomLambdaAuthorizer
-tags:
-# See: https://trint-ltd.atlassian.net/wiki/spaces/EN/pages/3259695105/AWS+Resource+Tagging+and+Exploring+Costs
 
 iamRoleStatements:
   - Effect: Allow
