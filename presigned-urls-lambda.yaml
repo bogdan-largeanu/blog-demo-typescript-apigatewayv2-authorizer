@@ -10,10 +10,3 @@ events:
             # Name of an authorizer defined in 'provider.httpApi.authorizers'
             name: CustomLambdaAuthorizer
 
-iamRoleStatements:
-  - Effect: Allow
-    Action:
-      - s3:GetObject
-      - s3:PutObject
-    Resource:
-      - arn:aws:s3:::${self:custom.liveEngineMediaSegmentsBucket}/*
