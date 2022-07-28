@@ -3,9 +3,6 @@ import {
   APIGatewaySimpleAuthorizerWithContextResult,
 } from 'aws-lambda';
 import {contextAuth2 } from './IAuthorizerContext'
-// type contextType = {
-//   userId: string;
-// };
 
 // format simple authorizer must be https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html
 interface IResponseAuthSimplePayloadv2 {
